@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminder App with Alarm Sound</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .reminder-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .alert-message {
+      text-align: center;
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reminder-container">
+    <h2>Daily Reminder App</h2>
+
+    <label for="day">Select Day:</label>
+    <select id="day">
+      <option value="Monday">Monday</option>
+      <option value="Tuesday">Tuesday</option>
+      <option value="Wednesday">Wednesday</option>
+      <option value="Thursday">Thursday</option>
+      <option value="Friday">Friday</option>
+      <option value="Saturday">Saturday</option>
+      <option value="Sunday">Sunday</option>
+    </select>
+
+    <label for="time">Select Time:</label>
+    <select id="time">
+      <option value="06:00">06:00 AM</option>
+      <option value="07:00">07:00 AM</option>
+      <option value="08:20 ">08:20 AM</option>
+      <option value="09:00">09:00 AM</option>
+      <option value="10:00">10:00 AM</option>
+    </select>
+
+    <label for="activity">Select Activity:</label>
+    <select id="activity">
+      <option value="Wake up">Wake up</option>
+      <option value="Go to gym">Go to gym</option>
+      <option value="Breakfast">Breakfast</option>
+      <option value="Meetings">Meetings</option>
+      <option value="Lunch">Lunch</option>
+      <option value="Quick nap">Quick nap</option>
+      <option value="Go to library">Go to library</option>
+      <option value="Dinner">Dinner</option>
+      <option value="Go to sleep">Go to sleep</option>
+    </select>
+
+    <button id="setReminderButton">Set Reminder</button>
+
+    <div class="alert-message" id="alertMessage"></div>
+  </div>
+
+  <!-- Alarm Sound -->
+  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
+  <script>
+    function convertTimeStringToDate(timeString) {
+      const [hours, minutes] = timeString.split(':').map(Number);
+      const now = new Date();
+      const reminderTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0, 0);
+
+      // If time is earlier today, set it for the next day
+      if (reminderTime < now) {
+        reminderTime.setDate(reminderTime.getDate() + 1);
+      }
+      return reminderTime;
+    }
+
+    document.getElementById('setReminderButton').addEventListener('click', function() {
+      const day = document.getElementById('day').value;
+      const time = document.getElementById('time').value;
+      const activity = document.getElementById('activity').value;
+
+      // Message display
+      const message = "Reminder set for " + activity + " at " + time + " on " + day;
+      document.getElementById('alertMessage').innerText = message;
+
+      // Convert selected time to a Date object
+      const reminderTime = convertTimeStringToDate(time);
+      const now = new Date();
+
+      // Calculate the difference in milliseconds between now and the reminder time
+      const timeDifference = reminderTime - now;
+
+      // Set a timeout to play the alarm sound at the selected time
+      setTimeout(function() {
+        const alarmSound = document.getElementById('alarmSound');
+        alarmSound.play();
+      }, timeDifference);
+    });
+  </script>
+
+</body>
+</html>
